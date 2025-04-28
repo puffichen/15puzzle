@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>傲天15拼图</title>
+<style>
+  body { display: flex; flex-direction: column; align-items: center; background: #f7f4ef; font-family: sans-serif; }
+  h1 { margin: 20px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 80px); grid-template-rows: repeat(4, 80px); gap: 2px; }
+  .tile { width: 80px; height: 80px; background-size: 320px 320px; cursor: pointer; }
+  .empty { background: none; cursor: default; }
+  button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+</style>
+</head>
+<body>
+<h1>傲天15拼图</h1>
+<div class="grid" id="grid">
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: 0px 0px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -80px 0px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -160px 0px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -240px 0px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: 0px -80px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -80px -80px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -160px -80px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -240px -80px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: 0px -160px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -80px -160px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -160px -160px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -240px -160px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: 0px -240px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -80px -240px;"></div>
+<div class="tile" style="background-image: url('傲天拼图块_sprite.png'); background-position: -160px -240px;"></div>
+<div class="tile empty"></div>
+
+</div>
+<button onclick="shuffle()">Shuffle</button>
+
+<script>
+const grid = document.getElementById('grid');
+let emptyIndex = 15; // 空格初始在最后
+
+function swapTiles(i, j) {
+    const tiles = Array.from(grid.children);
+    const tempBg = tiles[i].style.backgroundPosition;
+    tiles[i].style.backgroundPosition = tiles[j].style.backgroundPosition;
+    tiles[j].style.backgroundPosition = tempBg;
+
+    const tempClass = tiles[i].className;
+    tiles[i].className = tiles[j].className;
+    tiles[j].className = tempClass;
+}
+
+grid.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('tile')) return;
+    const idx = Array.from(grid.children).indexOf(e.target);
+    const diff = Math.abs(idx - emptyIndex);
+    if (diff === 1 || diff === 4) { // 相邻
+        swapTiles(idx, emptyIndex);
+        emptyIndex = idx;
+    }
+});
+
+function shuffle() {
+    for (let i = 0; i < 100; i++) {
+        const candidates = [emptyIndex-1, emptyIndex+1, emptyIndex-4, emptyIndex+4].filter(x => x >=0 && x < 16);
+        const move = candidates[Math.floor(Math.random() * candidates.length)];
+        swapTiles(move, emptyIndex);
+        emptyIndex = move;
+    }
+}
+</script>
+
+</body>
+</html>
